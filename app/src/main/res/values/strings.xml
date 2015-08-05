@@ -1,6 +1,51 @@
 <resources>
     <string name="app_name">ImageSearcher</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_image_view">ImageViewActivity</string>
+
+    <string name="config_image_size_not_specified">not specified</string>
+    <string name="config_image_size_small">small</string>
+    <string name="config_image_size_medium">medium</string>
+    <string name="config_image_size_large">large</string>
+    <string name="config_image_size_extra_large">extra large</string>
+
+    <string-array name="config_image_size">
+        <item>@string/config_image_size_not_specified</item>
+        <item>@string/config_image_size_small</item>
+        <item>@string/config_image_size_medium</item>
+        <item>@string/config_image_size_large</item>
+        <item>@string/config_image_size_extra_large</item>
+    </string-array>
+
+    <string name="config_image_color_not_specified">not specified</string>
+    <string name="config_image_color_black">black</string>
+    <string name="config_image_color_blue">blue</string>
+    <string name="config_image_color_brown">brown</string>
+    <string name="config_image_color_gray">gray</string>
+    <string name="config_image_color_green">green</string>
+
+    <string-array name="config_image_color">
+        <item>@string/config_image_color_not_specified</item>
+        <item>@string/config_image_color_black</item>
+        <item>@string/config_image_color_blue</item>
+        <item>@string/config_image_color_brown</item>
+        <item>@string/config_image_color_gray</item>
+        <item>@string/config_image_color_green</item>
+    </string-array>
+
+    <string name="config_image_type_not_specified">not specified</string>
+    <string name="config_image_type_face">face</string>
+    <string name="config_image_type_photo">photo</string>
+    <string name="config_image_type_clip_art">clip art</string>
+    <string name="config_image_type_line_art">line art</string>
+
+    <string-array name="config_image_type">
+        <item>@string/config_image_type_not_specified</item>
+        <item>@string/config_image_type_face</item>
+        <item>@string/config_image_type_photo</item>
+        <item>@string/config_image_type_clip_art</item>
+        <item>@string/config_image_type_line_art</item>
+    </string-array>
+
 </resources>

@@ -1,6 +1,11 @@
-package com.yahoo.shopping.imagesearcher;
+package com.yahoo.shopping.imagesearcher.asynctasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
+import com.yahoo.shopping.imagesearcher.interfaces.OnSearchFinished;
+import com.yahoo.shopping.imagesearcher.models.Image;
+import com.yahoo.shopping.imagesearcher.models.SearchResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,18 +22,22 @@ import java.util.List;
 /**
  * Created by jamesyan on 8/4/15.
  */
-public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult> {
-    OnSearchFinished mObserver;
+public class ImageSearchAyncTask extends AsyncTask<Void, Void, SearchResult> {
+    private OnSearchFinished mObserver;
+    private String mUrl;
 
-    public ImageSearchAyncTask(OnSearchFinished observer) {
+    public ImageSearchAyncTask(String url, OnSearchFinished observer) {
         this.mObserver = observer;
+        this.mUrl = url;
+
+        Log.i("xxxxxxx", mUrl);
     }
 
     private String fetchContent() throws IOException {
         URL url = null;
         StringBuffer jsonString = new StringBuffer();
 
-        url = new URL("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=%22android%22&rsz=8");
+        url = new URL(mUrl);
         URLConnection urlConnection = url.openConnection();
         BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
@@ -44,7 +53,7 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult
         return jsonString.toString();
     }
 
-    private ImageSearchResult convertToImageModelList(String jsonString) throws JSONException {
+    private SearchResult convertToImageModelList(String jsonString) throws JSONException {
         List<Image> list = new ArrayList<>();
 
         JSONObject root = new JSONObject(jsonString);
@@ -59,11 +68,12 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult
             return null;
         }
 
-        ImageSearchResult searchResult = new ImageSearchResult();
+        SearchResult searchResult = new SearchResult();
 
         JSONObject cursor = data.getJSONObject("cursor");
         searchResult.setCount(cursor.getInt("estimatedResultCount"));
         searchResult.setMoreResultUrl(cursor.getString("moreResultsUrl"));
+        searchResult.setCurrentPageIndex(cursor.getInt("currentPageIndex"));
 
         // handle list data
         if (data.isNull("results")) {
@@ -77,6 +87,8 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult
             image.setTitle(imageResult.getString("title"));
             image.setUrl(imageResult.getString("url"));
             image.setContent(imageResult.getString("content"));
+            image.setWidth(imageResult.getInt("width"));
+            image.setHeight(imageResult.getInt("height"));
 
             searchResult.addImage(image);
         }
@@ -86,10 +98,10 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult
 
 
     @Override
-    protected ImageSearchResult doInBackground(Void... params) {
+    protected SearchResult doInBackground(Void... params) {
         try {
             String jsonString = fetchContent();
-            ImageSearchResult imageSearchResult = convertToImageModelList(jsonString);
+            SearchResult imageSearchResult = convertToImageModelList(jsonString);
 
             return imageSearchResult;
         } catch (IOException | JSONException e) {
@@ -101,7 +113,7 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, ImageSearchResult
 
 
     @Override
-    protected void onPostExecute(ImageSearchResult searchResult) {
+    protected void onPostExecute(SearchResult searchResult) {
         mObserver.onSearchFinished(searchResult);
     }
 }

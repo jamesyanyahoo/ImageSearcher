@@ -1,4 +1,4 @@
-package com.yahoo.shopping.imagesearcher;
+package com.yahoo.shopping.imagesearcher.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,10 @@ import java.util.List;
 /**
  * Created by jamesyan on 8/4/15.
  */
-public class ImageSearchResult {
+public class SearchResult {
     private int count;
     private String moreResultUrl;
+    private int currentPageIndex;
     private List<Image> images = new ArrayList<>();
 
     public int getCount() {
@@ -33,5 +34,13 @@ public class ImageSearchResult {
 
     public void addImage(Image image) {
         this.images.add(image);
+    }
+
+    public int getCurrentPageIndex() {
+        return currentPageIndex;
+    }
+
+    public void setCurrentPageIndex(int currentPageIndex) {
+        this.currentPageIndex = currentPageIndex;
     }
 }
