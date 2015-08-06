@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
         android:padding="1dp"
-        android:scaleType="fitStart" />
+        android:scaleType="centerInside" />
 
     <TextView
         android:id="@+id/image_list_item_tv_title"

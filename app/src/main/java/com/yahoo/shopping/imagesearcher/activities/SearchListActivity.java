@@ -3,10 +3,12 @@ package com.yahoo.shopping.imagesearcher.activities;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 
 import com.etsy.android.grid.StaggeredGridView;
@@ -20,6 +22,8 @@ import com.yahoo.shopping.imagesearcher.models.FilterConfig;
 import com.yahoo.shopping.imagesearcher.models.Image;
 import com.yahoo.shopping.imagesearcher.models.SearchResult;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -29,7 +33,7 @@ public class SearchListActivity extends AppCompatActivity
     private FilterConfig mConfig = new FilterConfig();
     private SearchResult mSearchResult;
     private SearchResultAdapter mSearchResultAdapter;
-    private String mKeyword = "bikini";
+    private String mKeyword = "";
 
     private boolean shouldLoadMore = false;
 
@@ -92,7 +96,11 @@ public class SearchListActivity extends AppCompatActivity
         }
 
         StringBuffer url = new StringBuffer("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8");
-        url.append(String.format("&q=%s", keyword));
+        try {
+            url.append(String.format("&q=%s", URLEncoder.encode(keyword, "utf-8")));
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
         if (!sizeParam.isEmpty()) {
             url.append(String.format("&%s", sizeParam));
         }
@@ -109,12 +117,22 @@ public class SearchListActivity extends AppCompatActivity
     }
 
     private void refreshSearch() {
-        new ImageSearchAyncTask(buildSearchUrl(mKeyword, 0), this).execute();
+        if (!mKeyword.isEmpty()) {
+            findViewById(R.id.activity_main_no_result).setVisibility(View.INVISIBLE);
+
+            String searchUrl = buildSearchUrl(mKeyword, 0);
+            if (searchUrl != null) {
+                new ImageSearchAyncTask(searchUrl, this).execute();
+            }
+        }
     }
 
     private void loadMoreData() {
         if (mSearchResult != null) {
-            new ImageSearchAyncTask(buildSearchUrl(mKeyword, mSearchResult.getCurrentPageIndex() + 1), this).execute(); // should test whether the load more is empty
+            String searchUrl = buildSearchUrl(mKeyword, mSearchResult.getCurrentPageIndex() + 1);
+            if (searchUrl != null) {
+                new ImageSearchAyncTask(searchUrl, this).execute(); // should test whether the load more is empty
+            }
         }
     }
 
@@ -129,7 +147,10 @@ public class SearchListActivity extends AppCompatActivity
         gridView.setAdapter(mSearchResultAdapter);
         gridView.setOnScrollListener(this);
 
-        refreshSearch();
+        ActionBar menu = getSupportActionBar();
+        menu.setDisplayShowHomeEnabled(true);
+        menu.setLogo(R.mipmap.ic_launcher);
+        menu.setDisplayUseLogoEnabled(true);
     }
 
     @Override

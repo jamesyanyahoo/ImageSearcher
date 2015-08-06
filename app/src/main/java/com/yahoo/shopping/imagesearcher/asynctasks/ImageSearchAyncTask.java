@@ -1,7 +1,6 @@
 package com.yahoo.shopping.imagesearcher.asynctasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.yahoo.shopping.imagesearcher.interfaces.OnSearchFinished;
 import com.yahoo.shopping.imagesearcher.models.Image;
@@ -16,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jamesyan on 8/4/15.
@@ -29,13 +26,11 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, SearchResult> {
     public ImageSearchAyncTask(String url, OnSearchFinished observer) {
         this.mObserver = observer;
         this.mUrl = url;
-
-        Log.i("xxxxxxx", mUrl);
     }
 
     private String fetchContent() throws IOException {
         URL url = null;
-        StringBuffer jsonString = new StringBuffer();
+        StringBuilder jsonString = new StringBuilder();
 
         url = new URL(mUrl);
         URLConnection urlConnection = url.openConnection();
@@ -54,8 +49,6 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, SearchResult> {
     }
 
     private SearchResult convertToImageModelList(String jsonString) throws JSONException {
-        List<Image> list = new ArrayList<>();
-
         JSONObject root = new JSONObject(jsonString);
         if (root.isNull("responseData")) {
             // handle null case
@@ -101,9 +94,8 @@ public class ImageSearchAyncTask extends AsyncTask<Void, Void, SearchResult> {
     protected SearchResult doInBackground(Void... params) {
         try {
             String jsonString = fetchContent();
-            SearchResult imageSearchResult = convertToImageModelList(jsonString);
 
-            return imageSearchResult;
+            return convertToImageModelList(jsonString);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

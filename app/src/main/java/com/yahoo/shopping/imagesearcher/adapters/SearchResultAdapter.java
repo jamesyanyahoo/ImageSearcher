@@ -51,7 +51,7 @@ public class SearchResultAdapter extends ArrayAdapter<Image> {
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         float imageWidth = image.getWidth();
         float imageHeight = image.getHeight();
-        float imageViewWidth = ((metrics.widthPixels / metrics.density - 9) / 2 - 2) * metrics.density;
+        float imageViewWidth = ((metrics.widthPixels / metrics.density - 3 * 7) / 2 - 2) * metrics.density;
         float imageViewHeight = imageHeight * ( imageViewWidth  / imageWidth );
 
         ivImage.setMinimumWidth((int) imageViewWidth);
@@ -64,6 +64,7 @@ public class SearchResultAdapter extends ArrayAdapter<Image> {
                 mContext.startActivity(intent);
             }
         });
+        Log.i("xxxxxxxxx", image.getUrl());
         Picasso.with(mContext).load(image.getUrl()).into(ivImage);
 
         return convertView;
